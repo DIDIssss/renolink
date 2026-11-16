@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <!-- Metadados -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="RenoLink conecta criadores e empresas em torno de ideias e oportunidades de inovação.">
+    <link rel="icon" href="assets/img/logo-renolink.svg" type="image/svg+xml">
+
+    <!-- Tipografia -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Biblioteca de ícones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Estilos da aplicação -->
+    <link rel="stylesheet" href="assets/css/style.css"><link rel="stylesheet" href="assets/css/phase5.css">
+    <title>Entrar | RenoLink</title>
+  </head>
+  <body data-page="login">
+    <!-- Layout de autenticação -->
+    <div class="auth-layout">
+      <section class="auth-side">
+        <a class="brand" href="index.html">
+          <img class="brand-logo" src="assets/img/logo-renolink.svg" alt="Símbolo da RenoLink">
+          <div>
+            <strong>RenoLink</strong>
+            <span>Onde ideias ganham vida</span>
+          </div>
+        </a>
+        <div><span class="section-kicker">BEM-VINDO DE VOLTA</span><h1>Continue transformando ideias em oportunidades.</h1><p>Acesse sua conta para acompanhar propostas, interesses e negociações.</p></div>
+        <small class="auth-note">RenoLink • Conectando ideias e possibilidades</small>
+      </section>
+      <section class="auth-card-wrap">
+        <form class="auth-card" id="loginForm">
+
+          <h2>Entrar</h2>
+          <p>Use seus dados para acessar a plataforma.</p>
+          <div id="formAlert" class="form-alert" hidden></div>
+          <div class="form-group"><label for="email">E-mail</label><div class="input-icon-wrap"><i class="fa-regular fa-envelope" aria-hidden="true"></i><input id="email" name="email" class="input input-with-icon" type="email" placeholder="seu@email.com" required></div></div>
+          <div class="form-group"><label for="senha">Senha</label><div class="input-icon-wrap"><i class="fa-solid fa-lock" aria-hidden="true"></i><input id="senha" name="password" class="input input-with-icon" type="password" placeholder="••••••••" minlength="6" required></div></div>
+          <button class="btn btn-primary btn-block form-submit" type="submit"><i class="fa-solid fa-right-to-bracket" aria-hidden="true"></i>Entrar na RenoLink</button>
+          <div class="demo-access"><strong>Seu próximo passo começa aqui.</strong><span>Acompanhe suas ideias, converse com a equipe e encontre novas possibilidades.</span></div>
+          <div class="auth-footer">Ainda não tem conta? <a href="cadastro.html">Criar conta</a> · <a href="admin-login.html">Equipe RenoLink</a></div>
+        </form>
+      </section>
+    </div>
+    <script src="assets/js/security.js"></script>
+    <script src="assets/js/realtime.js"></script><script src="assets/js/app.js"></script>
+  </body>
+</html>

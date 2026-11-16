@@ -1,0 +1,26 @@
+# Modelo para revisao. NAO instalado ou iniciado nesta fase.
+[Unit]
+Description=RenoLink staging
+After=network-online.target
+Wants=network-online.target
+[Service]
+Type=simple
+User=renolink-staging
+Group=renolink-staging
+WorkingDirectory=/opt/renolink-staging/current
+EnvironmentFile=/etc/renolink/staging.env
+ExecStart=/usr/bin/node scripts/staging.js start
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=15
+KillSignal=SIGTERM
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+UMask=0077
+LimitNOFILE=4096
+StandardOutput=journal
+StandardError=journal
+[Install]
+WantedBy=multi-user.target

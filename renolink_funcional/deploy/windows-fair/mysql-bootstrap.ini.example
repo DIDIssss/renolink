@@ -1,0 +1,14 @@
+# Modelo inativo de inicializacao. Nunca executar/copiar sem autorizacao.
+# ACLs do diretório de configuração devem ser aplicadas e verificadas antes.
+[mysqld]
+basedir=D:/MySQL
+datadir=D:/RenoLinkFair/mysql/data
+port=3307
+bind-address=127.0.0.1
+mysqlx=OFF
+log-error=D:/RenoLinkFair/mysql/bootstrap-secret/initialize.err
+general-log=OFF
+
+# mysql --initialize é uma operação offline; este modelo não inicia serviço.
+# O log de erro pode conter a senha temporária e requer ACL restrita antes
+# da criação. Não reutilizar este arquivo para iniciar o serviço.

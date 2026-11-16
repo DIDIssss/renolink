@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <!-- Metadados -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="RenoLink conecta criadores e empresas em torno de ideias e oportunidades de inovação.">
+    <link rel="icon" href="assets/img/logo-renolink.svg" type="image/svg+xml">
+
+    <!-- Tipografia -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Biblioteca de ícones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Estilos da aplicação -->
+    <link rel="stylesheet" href="assets/css/style.css"><link rel="stylesheet" href="assets/css/phase5.css">
+    <title>Dashboard | RenoLink</title>
+  </head>
+  <body data-page="dashboard" data-auth="required">
+    <div class="app-layout">
+      <!-- Barra lateral -->
+      <aside class="sidebar">
+        <a class="brand" href="dashboard.html">
+          <img class="brand-logo" src="assets/img/logo-renolink.svg" alt="Símbolo da RenoLink">
+          <div>
+            <strong>RenoLink</strong>
+            <span id="sidebarRole">Painel</span>
+          </div>
+        </a>
+
+        <nav class="sidebar-menu" aria-label="Navegação principal">
+          <a data-nav="dashboard" href="dashboard.html"><i class="fa-solid fa-house" aria-hidden="true"></i><span>Dashboard</span></a>
+          <a data-nav="new" class="creator-only" href="nova-ideia.html"><i class="fa-regular fa-lightbulb" aria-hidden="true"></i><span>Nova ideia</span></a>
+          <a data-nav="explore" href="explorar.html"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span>Explorar</span></a>
+          <a data-nav="messages" href="mensagens.html"><i class="fa-regular fa-message" aria-hidden="true"></i><span>Mensagens</span></a>
+          <a data-nav="deals" href="negociacoes.html"><i class="fa-regular fa-handshake" aria-hidden="true"></i><span>Negociações</span></a>
+          <a href="#" data-action="logout"><i class="fa-solid fa-arrow-right-from-bracket" aria-hidden="true"></i><span>Sair</span></a>
+        </nav>
+      </aside>
+      <main class="main-area">
+        <!-- Cabeçalho interno -->
+        <header class="app-topbar">
+          <strong id="pageLabel">RenoLink</strong>
+          <div class="user-chip">
+            <div class="avatar" id="userAvatar">R</div>
+            <div>
+              <strong class="user-name" id="userName">Usuário</strong>
+              <span class="user-role" id="userRole">Perfil</span>
+            </div>
+          </div>
+        </header>
+        <div class="content">
+          <div class="content-header">
+            <div><h1 id="dashboardGreeting">Olá</h1><p class="content-subtitle" id="dashboardSubtitle">Acompanhe suas atividades na RenoLink.</p></div>
+            <a class="btn btn-primary creator-only" href="nova-ideia.html"><i class="fa-solid fa-plus" aria-hidden="true"></i>Enviar nova ideia</a>
+            <a class="btn btn-primary company-only" href="explorar.html" hidden><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>Explorar ideias</a>
+          </div>
+
+          <section class="stats-grid" aria-label="Indicadores">
+            <article class="stat-card"><div class="stat-card-icon"><i class="fa-regular fa-lightbulb" aria-hidden="true"></i></div><span id="statLabel1">Total de ideias</span><strong id="stat1">0</strong></article>
+            <article class="stat-card"><div class="stat-card-icon"><i class="fa-solid fa-magnifying-glass-chart" aria-hidden="true"></i></div><span id="statLabel2">Em análise</span><strong id="stat2">0</strong></article>
+            <article class="stat-card"><div class="stat-card-icon"><i class="fa-solid fa-globe" aria-hidden="true"></i></div><span id="statLabel3">Publicadas</span><strong id="stat3">0</strong></article>
+            <article class="stat-card"><div class="stat-card-icon"><i class="fa-regular fa-handshake" aria-hidden="true"></i></div><span id="statLabel4">Interesses</span><strong id="stat4">0</strong></article>
+          </section>
+
+          <section class="panel">
+            <div class="panel-header"><div><h2 id="dashboardTableTitle">Minhas ideias</h2><p class="content-subtitle" id="dashboardTableSubtitle">Últimas propostas cadastradas</p></div><a href="explorar.html" class="btn btn-ghost"><i class="fa-solid fa-arrow-right" aria-hidden="true"></i>Explorar</a></div>
+            <div class="table-wrap"><table class="table"><thead><tr id="dashboardTableHead"><th>Ideia</th><th>Categoria</th><th>Status</th><th>Atualização</th></tr></thead><tbody id="dashboardTableBody"><tr><td colspan="4" class="table-loading">Carregando...</td></tr></tbody></table></div>
+          </section>
+        </div>
+      </main>
+    </div>
+    <script src="assets/js/realtime.js"></script><script src="assets/js/app.js"></script>
+  </body>
+</html>

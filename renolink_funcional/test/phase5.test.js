@@ -1,0 +1,21 @@
+'use strict';
+const { test } = require('node:test');
+const fs = require('node:fs');
+const os = require('node:os');
+const path = require('node:path');
+const { once } = require('node:events');
+const { fixture } = require('./fixtures/mysql');
+const { initialize } = require('../lib/phase5-data');
+const { localStore } = require('../lib/data');
+const { createServer } = require('../server');
+const { seed, scenarios } = require('./fixtures/phase5');
+test('Fase 5 HTTP: papeis, acesso administrativo, moderacao, privacidade, atendimento, negociacoes e auditoria', async t => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'renolink-phase5-'));
+  const source = path.join(dir, 'source.json');
+  const db = initialize(fixture()), ids = seed(db);
+  fs.writeFileSync(source, JSON.stringify(db));
+  const store = localStore({ source, file: path.join(dir, 'runtime/db.json'), backupDir: path.join(dir, 'backups') });
+  const server = createServer(store); server.listen(0, '127.0.0.1'); await once(server, 'listening');
+  t.after(async () => { server.closeAllConnections(); await new Promise(resolve => server.close(resolve)); store.close(); });
+  await scenarios(`http://127.0.0.1:${server.address().port}`, ids, { disableSupport:()=>store.transaction(db=>{db.staff.find(s=>s.userId === ids.support).active = 0;}) });
+});

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+  <head>
+    <!-- Metadados -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="RenoLink conecta criadores e empresas em torno de ideias e oportunidades de inovação.">
+    <link rel="icon" href="assets/img/logo-renolink.svg" type="image/svg+xml">
+
+    <!-- Tipografia -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Biblioteca de ícones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Estilos da aplicação -->
+    <link rel="stylesheet" href="assets/css/style.css"><link rel="stylesheet" href="assets/css/phase5.css">
+    <title>RenoLink | Onde ideias ganham vida</title>
+  </head>
+
+  <body data-page="home">
+    <!-- Cabeçalho e navegação -->
+    <header class="topbar">
+      <div class="container topbar-content">
+        <a class="brand" href="index.html">
+          <img class="brand-logo" src="assets/img/logo-renolink.svg" alt="Símbolo da RenoLink">
+          <div>
+            <strong>RenoLink</strong>
+            <span>Onde ideias ganham vida</span>
+          </div>
+        </a>
+
+        <nav class="nav-desktop" aria-label="Navegação principal">
+          <a href="#como-funciona">Como funciona</a>
+          <a href="explorar.html">Explorar ideias</a>
+          <a href="#empresas">Para empresas</a>
+          <a class="btn btn-ghost auth-login-link" href="login.html">Entrar</a>
+          <a class="btn btn-primary auth-register-link" href="cadastro.html">Criar conta</a>
+          <a class="btn btn-primary auth-dashboard-link" href="dashboard.html" hidden>Meu painel</a>
+        </nav>
+
+        <button class="menu-button" id="menuButton" type="button" aria-label="Abrir menu" aria-expanded="false"><i class="fa-solid fa-bars" aria-hidden="true"></i></button>
+      </div>
+
+      <nav class="nav-mobile" id="mobileMenu" aria-label="Navegação móvel">
+        <a href="#como-funciona">Como funciona</a>
+        <a href="explorar.html">Explorar ideias</a>
+        <a href="#empresas">Para empresas</a>
+        <a class="auth-login-link" href="login.html">Entrar</a>
+        <a class="auth-register-link" href="cadastro.html">Criar conta</a>
+        <a class="auth-dashboard-link" href="dashboard.html" hidden>Meu painel</a>
+      </nav>
+    </header>
+
+    <main>
+      <!-- Seção principal -->
+      <section class="hero-section">
+        <div class="container hero-grid">
+          <div class="hero-copy">
+            <div class="eyebrow">INOVAÇÃO ABERTA • IDEIAS • OPORTUNIDADES</div>
+            <h1>Problemas existem. <span>Soluções também.</span></h1>
+            <p>A RenoLink conecta pessoas com boas ideias a empresas que procuram novas soluções. Envie sua ideia, acompanhe a análise e transforme uma oportunidade em algo real.</p>
+
+            <div class="hero-actions">
+              <a class="btn btn-primary btn-lg" href="cadastro.html"><i class="fa-regular fa-lightbulb" aria-hidden="true"></i>Tenho uma ideia</a>
+              <a class="btn btn-secondary btn-lg" href="empresa.html"><i class="fa-regular fa-building" aria-hidden="true"></i>Represento uma empresa</a>
+            </div>
+
+            <div class="hero-proof">
+              <div><strong id="publicIdeasCount">0</strong><span>ideias cadastradas</span></div>
+              <div><strong id="publicCompaniesCount">0</strong><span>empresas interessadas</span></div>
+              <div><strong id="publicNegotiationsCount">0</strong><span>negociações iniciadas</span></div>
+            </div>
+          </div>
+
+          <!-- Prévia visual da plataforma -->
+          <div class="hero-visual">
+            <div class="floating-card card-main">
+              <div class="mini-status purple">Ideia em destaque</div>
+              <h3>Smart Cart</h3>
+              <p>Ajuda clientes a localizar produtos dentro da loja com mais rapidez.</p>
+              <div class="idea-meta"><span><i class="fa-solid fa-cart-shopping" aria-hidden="true"></i>Varejo</span><span>Alto potencial</span></div>
+            </div>
+            <div class="floating-card card-small card-top"><span class="icon-circle"><i class="fa-regular fa-lightbulb" aria-hidden="true"></i></span><div><strong>Nova ideia recebida</strong><span>agora</span></div></div>
+            <div class="floating-card card-small card-bottom"><span class="icon-circle green"><i class="fa-regular fa-building" aria-hidden="true"></i></span><div><strong>Empresa interessada</strong><span>Nova oportunidade</span></div></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Como funciona -->
+      <section class="section" id="como-funciona">
+        <div class="container">
+          <div class="section-heading"><span>COMO FUNCIONA</span><h2>Da ideia à oportunidade</h2><p>Um processo simples para aproximar quem cria de quem pode executar.</p></div>
+          <div class="steps-grid">
+            <article class="step-card"><div class="step-number">01</div><h3>Envie sua ideia</h3><p>Conte o problema, sua solução e quem pode se beneficiar dela.</p></article>
+            <article class="step-card"><div class="step-number">02</div><h3>Curadoria RenoLink</h3><p>A proposta é organizada para ficar mais clara, objetiva e apresentável.</p></article>
+            <article class="step-card"><div class="step-number">03</div><h3>Empresas descobrem</h3><p>Empresas encontram oportunidades compatíveis com seus interesses.</p></article>
+            <article class="step-card"><div class="step-number">04</div><h3>Negociação</h3><p>O autor acompanha o interesse e pode avançar para uma negociação.</p></article>
+          </div>
+        </div>
+      </section>
+
+      <!-- Área para criadores -->
+      <section class="section section-dark">
+        <div class="container split-grid">
+          <div>
+            <span class="section-kicker">PARA CRIADORES</span>
+            <h2>Uma percepção simples pode virar uma oportunidade real.</h2>
+            <p class="section-text">Cadastre sua ideia, acompanhe o status e receba o interesse de empresas em um único ambiente.</p>
+            <ul class="check-list"><li>Envio guiado de ideias</li><li>Acompanhamento de status</li><li>Interesse de empresas</li><li>Negociações centralizadas</li></ul>
+            <a href="cadastro.html" class="btn btn-primary"><i class="fa-solid fa-arrow-right" aria-hidden="true"></i>Começar agora</a>
+          </div>
+          <div class="dashboard-preview">
+            <div class="preview-header"><span>Visão geral</span><span class="status-online"><i class="fa-solid fa-circle" aria-hidden="true"></i>Online</span></div>
+            <div class="preview-stats"><div><strong>4</strong><span>Ideias</span></div><div><strong>2</strong><span>Em análise</span></div><div><strong>1</strong><span>Publicada</span></div><div><strong>1</strong><span>Interesse</span></div></div>
+            <div class="preview-list"><div class="preview-item"><span class="dot purple"></span><div><strong>EcoBox Modular</strong><span>Em análise</span></div><b>72%</b></div><div class="preview-item"><span class="dot green"></span><div><strong>Fila Zero</strong><span>Empresa interessada</span></div><b>100%</b></div><div class="preview-item"><span class="dot yellow"></span><div><strong>Smart Cart</strong><span>Publicada</span></div><b>88%</b></div></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Área para empresas -->
+      <section class="section" id="empresas">
+        <div class="container">
+          <div class="section-heading"><span>PARA EMPRESAS</span><h2>Descubra problemas reais antes dos concorrentes.</h2><p>Explore ideias da comunidade e demonstre interesse em oportunidades.</p></div>
+          <div class="feature-grid">
+            <article class="feature-card"><span class="feature-icon"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i></span><h3>Descobrir oportunidades</h3><p>Filtre ideias por setor e encontre propostas alinhadas ao seu negócio.</p></article>
+            <article class="feature-card"><span class="feature-icon"><i class="fa-solid fa-bullseye" aria-hidden="true"></i></span><h3>Encontrar soluções</h3><p>Use a comunidade como radar para problemas e novas possibilidades.</p></article>
+            <article class="feature-card"><span class="feature-icon"><i class="fa-regular fa-handshake" aria-hidden="true"></i></span><h3>Negociar</h3><p>Demonstre interesse e acompanhe oportunidades dentro da plataforma.</p></article>
+          </div>
+        </div>
+      </section>
+
+      <!-- Chamada para ação -->
+      <section class="section cta-section"><div class="container cta-box"><div><span>PRONTO PARA COMEÇAR?</span><h2>Sua próxima oportunidade pode começar com uma ideia simples.</h2></div><a href="cadastro.html" class="btn btn-light btn-lg"><i class="fa-solid fa-arrow-right" aria-hidden="true"></i>Criar conta grátis</a></div></section>
+    </main>
+
+    <!-- Rodapé -->
+    <footer class="footer"><div class="container footer-content"><a class="brand" href="index.html">
+          <img class="brand-logo" src="assets/img/logo-renolink.svg" alt="Símbolo da RenoLink">
+          <div>
+            <strong>RenoLink</strong>
+            <span>Onde ideias ganham vida</span>
+          </div>
+        </a><p>RenoLink • Ideias conectadas. Possibilidades reais.</p></div></footer>
+
+    <!-- Scripts da aplicação -->
+    <script src="assets/js/realtime.js"></script><script src="assets/js/app.js"></script>
+  </body>
+</html>

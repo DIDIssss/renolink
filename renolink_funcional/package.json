@@ -1,0 +1,42 @@
+{
+  "name": "renolink-prototipo-local",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Plataforma RenoLink com Node.js, MySQL e SSE",
+  "scripts": {
+    "postinstall": "node scripts/patch-mysql2-ip-identity.js",
+    "start": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File INICIAR_RENOLINK.ps1",
+    "reset-db": "node reset-db.js",
+    "test": "node --test test/security.test.js test/mysql.test.js test/mysql.read.test.js test/mysql.scopes.test.js test/mysql.provision.test.js test/mysql.tls.identity.test.js test/fair-mysql-bootstrap-plan.test.js test/mysql-bootstrap-trial.static.test.js test/mysql-bootstrap-diagnostics.test.js test/phase5.test.js test/portal-summary.test.js test/realtime.test.js test/realtime-scoped.test.js test/realtime-client.test.js test/app-client.test.js test/crypto-queue.test.js test/hosting.test.js",
+    "test:phase82": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/test-phase82.ps1 -Mode Functional",
+    "test:phase83": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/test-phase83.ps1 -Mode Run",
+    "test:phase81": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/test-phase81.ps1 -Mode Functional",
+    "test:phase8:load": "powershell.exe -NoProfile -File scripts/test-phase8.ps1 -Mode Load",
+    "test:phase8:mobile": "powershell.exe -NoProfile -File scripts/test-phase8.ps1 -Mode Mobile",
+    "test:mysql": "node --test test/mysql.integration.test.js",
+    "test:phase5:mysql": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/test-phase5.ps1",
+    "test:phase5:browser": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/test-phase5.ps1 -Browser",
+    "test:phase6": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/test-phase6.ps1",
+    "test:phase7": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/test-phase7.ps1",
+    "test:postgres": "node --test test/postgres.test.js",
+    "db:check": "node scripts/migrate-mysql.js --check",
+    "db:migrate": "node scripts/migrate-mysql.js --apply",
+    "db:check:postgres": "node scripts/migrate-postgres.js --check",
+    "db:migrate:postgres": "node scripts/migrate-postgres.js --apply",
+    "start:staging": "node scripts/staging.js start",
+    "staging:check": "node scripts/staging.js check",
+    "staging:health": "node scripts/healthcheck.js",
+    "test:phase9": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/test-phase9.ps1 -Mode Test"
+  },
+  "dependencies": {
+    "mysql2": "^3.24.6",
+    "pg": "^8.23.1"
+  },
+  "devDependencies": {
+    "playwright": "^1.64.1"
+  },
+  "engines": {
+    "node": ">=24.19.0 <25",
+    "npm": ">=11 <12"
+  }
+}

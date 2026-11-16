@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <!-- Metadados -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="RenoLink conecta criadores e empresas em torno de ideias e oportunidades de inovação.">
+    <link rel="icon" href="assets/img/logo-renolink.svg" type="image/svg+xml">
+
+    <!-- Tipografia -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Biblioteca de ícones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Estilos da aplicação -->
+    <link rel="stylesheet" href="assets/css/style.css"><link rel="stylesheet" href="assets/css/phase5.css">
+    <title>Detalhes da ideia | RenoLink</title>
+  </head>
+  <body data-page="idea-detail">
+    <header class="topbar"><div class="container topbar-content"><a class="brand" href="index.html">
+          <img class="brand-logo" src="assets/img/logo-renolink.svg" alt="Símbolo da RenoLink">
+          <div>
+            <strong>RenoLink</strong>
+            <span>Onde ideias ganham vida</span>
+          </div>
+        </a><nav class="nav-desktop"><a href="explorar.html">Explorar ideias</a><a class="btn btn-primary auth-dashboard-link" href="dashboard.html" hidden>Meu painel</a><a class="btn btn-ghost auth-login-link" href="login.html">Entrar</a></nav></div></header>
+    <main class="section"><div class="container detail-layout"><section class="detail-card" id="ideaDetail"><div class="loading-card">Carregando ideia...</div></section><aside class="detail-side panel"><h3>Vamos dar o próximo passo?</h3><p class="content-subtitle">Converse com a equipe RenoLink sobre esta proposta e acompanhe sua solicitação.</p><button id="interestButton" disabled class="btn btn-primary btn-block" type="button"><i class="fa-regular fa-handshake" aria-hidden="true"></i>Solicitar negociação</button><div id="interestAlert" class="form-alert" hidden></div></aside></div></main>
+    <script src="assets/js/realtime.js"></script><script src="assets/js/app.js"></script>
+  </body>
+</html>

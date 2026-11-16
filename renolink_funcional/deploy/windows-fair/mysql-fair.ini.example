@@ -1,0 +1,16 @@
+# Modelo inativo da configuracao final; placeholders não são certificados reais.
+[mysqld]
+basedir=D:/MySQL
+datadir=D:/RenoLinkFair/mysql/data
+port=3307
+bind-address=127.0.0.1
+mysqlx=OFF
+require_secure_transport=ON
+ssl-ca=C:/ProgramData/RenoLink/fair/secrets/mysql-ca.pem
+ssl-cert=C:/ProgramData/RenoLink/fair/secrets/mysql-server-cert.pem
+ssl-key=C:/ProgramData/RenoLink/fair/secrets/mysql-server-key.pem
+log-error=D:/RenoLinkFair/mysql/logs/mysql-fair.err
+general-log=OFF
+
+# Somente para a futura instancia manual MYSQL_RENLINK_FEIRA.
+# Não contém credenciais e não altera MYSQL80.

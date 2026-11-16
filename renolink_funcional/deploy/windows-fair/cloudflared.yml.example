@@ -1,0 +1,8 @@
+# Modelo inativo. Substituir placeholders apenas depois de aprovacao explicita.
+tunnel: <TUNNEL_UUID_APOS_AUTORIZACAO>
+credentials-file: C:\ProgramData\RenoLink\fair\secrets\<TUNNEL_UUID>.json
+
+ingress:
+  - hostname: <HOSTNAME_AUTORIZADO>
+    service: http://127.0.0.1:3100
+  - service: http_status:404

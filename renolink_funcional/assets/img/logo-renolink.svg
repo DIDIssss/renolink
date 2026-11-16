@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" role="img" aria-labelledby="title desc">
+  <title id="title">RenoLink R Logo</title>
+  <desc id="desc">Stylized letter R with a purple gradient body and green gradient leg.</desc>
+
+  <defs>
+    <linearGradient id="purpleGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#6f45ff"/>
+      <stop offset="50%" stop-color="#9b35f0"/>
+      <stop offset="100%" stop-color="#7b2fe0"/>
+    </linearGradient>
+
+    <linearGradient id="purpleFold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#6e35dd"/>
+      <stop offset="100%" stop-color="#4f2bc4"/>
+    </linearGradient>
+
+    <linearGradient id="greenGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#00b88f"/>
+      <stop offset="100%" stop-color="#22e5b3"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Corpo principal do R -->
+  <path
+    d="M250 170
+       H555
+       C700 170 805 272 805 410
+       C805 548 701 650 560 650
+       H468
+       L355 770
+       C340 786 313 775 313 754
+       V330
+       H250
+       Z
+
+       M410 330
+       V500
+       H560
+       C621 500 662 461 662 410
+       C662 359 621 330 560 330
+       Z"
+    fill="url(#purpleGrad)"
+    fill-rule="evenodd"/>
+
+  <!-- Dobra roxa inferior -->
+  <path
+    d="M468 500
+       C430 510 396 532 368 563
+       C336 598 334 650 367 684
+       L526 843
+       C511 787 528 727 574 685
+       L468 579
+       C448 558 448 522 468 500
+       Z"
+    fill="url(#purpleFold)"
+    opacity="0.95"/>
+
+  <!-- Perna verde -->
+  <path
+    d="M526 843
+       C513 793 527 734 574 685
+       L759 870
+       C774 885 763 910 742 910
+       H630
+       C596 910 563 897 539 873
+       Z"
+    fill="url(#greenGrad)"/>
+</svg>

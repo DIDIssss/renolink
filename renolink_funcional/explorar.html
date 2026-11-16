@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <!-- Metadados -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="RenoLink conecta criadores e empresas em torno de ideias e oportunidades de inovação.">
+    <link rel="icon" href="assets/img/logo-renolink.svg" type="image/svg+xml">
+
+    <!-- Tipografia -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Biblioteca de ícones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Estilos da aplicação -->
+    <link rel="stylesheet" href="assets/css/style.css"><link rel="stylesheet" href="assets/css/phase5.css">
+    <title>Explorar ideias | RenoLink</title>
+  </head>
+  <body data-page="explore">
+    <header class="topbar">
+      <div class="container topbar-content">
+        <a class="brand" href="index.html">
+          <img class="brand-logo" src="assets/img/logo-renolink.svg" alt="Símbolo da RenoLink">
+          <div>
+            <strong>RenoLink</strong>
+            <span>Onde ideias ganham vida</span>
+          </div>
+        </a>
+        <nav class="nav-desktop" aria-label="Navegação principal"><a href="index.html">Início</a><a href="explorar.html">Explorar ideias</a><a class="btn btn-ghost auth-login-link" href="login.html">Entrar</a><a class="btn btn-primary auth-register-link" href="cadastro.html">Criar conta</a><a class="btn btn-primary auth-dashboard-link" href="dashboard.html" hidden>Meu painel</a></nav>
+        <button class="menu-button" id="menuButton" type="button" aria-label="Abrir menu" aria-expanded="false"><i class="fa-solid fa-bars" aria-hidden="true"></i></button>
+      </div>
+      <nav class="nav-mobile" id="mobileMenu" aria-label="Navegação móvel"><a href="index.html">Início</a><a class="auth-login-link" href="login.html">Entrar</a><a class="auth-register-link" href="cadastro.html">Criar conta</a><a class="auth-dashboard-link" href="dashboard.html" hidden>Meu painel</a></nav>
+    </header>
+
+    <main class="section">
+      <div class="container">
+        <div class="section-heading"><span>MARKETPLACE DE IDEIAS</span><h2>Explore oportunidades</h2><p>Descubra propostas de diferentes setores e encontre ideias com potencial de inovação.</p></div>
+        <section class="panel marketplace-filter" aria-label="Filtros de oportunidades"><div class="filter-grid"><div class="input-icon-wrap"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><input id="ideaSearch" class="input input-with-icon" type="search" placeholder="Buscar ideia ou problema..."></div><select id="categoryFilter" class="select" aria-label="Filtrar por categoria"><option value="all">Todas as categorias</option><option value="Varejo">Varejo</option><option value="Tecnologia">Tecnologia</option><option value="Agronegócio">Agronegócio</option><option value="Logística">Logística</option><option value="Serviços">Serviços</option><option value="Sustentabilidade">Sustentabilidade</option></select></div></section>
+        <section class="idea-grid" id="ideaGrid" aria-label="Oportunidades disponíveis"><div class="loading-card">Carregando oportunidades...</div></section>
+        <div class="empty-state" id="emptyState" hidden><i class="fa-regular fa-folder-open" aria-hidden="true"></i><h3>Nenhuma ideia encontrada</h3><p>Tente alterar o termo de busca ou a categoria.</p></div>
+      </div>
+    </main>
+    <script src="assets/js/realtime.js"></script><script src="assets/js/app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,207 @@
+{
+  "results": [
+    {
+      "name": "Saúde da API",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Entrega HTTP: cadastro.html",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Entrega HTTP: dashboard.html",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Entrega HTTP: empresa.html",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Entrega HTTP: explorar.html",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Entrega HTTP: ideia.html",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Entrega HTTP: index.html",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Entrega HTTP: login.html",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Entrega HTTP: mensagens.html",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Entrega HTTP: negociacoes.html",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Entrega HTTP: nova-ideia.html",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Entrega HTTP: assets/css/style.css",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Entrega HTTP: assets/js/app.js",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Entrega HTTP: assets/img/logo-renolink.svg",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Banco bloqueado no caminho normal",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "FALHA: banco exposto com maiúsculas no Windows",
+      "ok": true,
+      "detail": "HTTP 200; conteúdo não registrado"
+    },
+    {
+      "name": "FALHA: código do servidor exposto",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Rotas privadas recusam anônimo",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Cadastro criador e empresa",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Resposta de cadastro omite senha e salt",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Cadastro duplicado recusado",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Senha incorreta recusada",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Login e consulta de sessão",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Cadastro de ideia",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Ideia aparece no painel do autor",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Ideia em análise fica fora do marketplace",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "FALHA: ideia em análise acessível anonimamente",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Empresa não pode cadastrar ideia",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "FALHA: interesse publica ideia sem revisão",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Interesse repetido reutiliza negociação",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Negociação visível aos dois participantes",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Envio e leitura de mensagem pela API",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Mensagem vazia recusada",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "FALHA: e-mail inválido aceito pela API",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Mensagens e negociações isoladas por usuário",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "FALHA: mensagem enviada a terceiro sem negociação",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "FALHA: gravações concorrentes perdem dados",
+      "ok": true,
+      "detail": "2 respostas; 1 ideia(s) persistida(s); IDs retornados: 11, 11"
+    },
+    {
+      "name": "Persistência JSON de cadastro, ideia, mensagem e negociação",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Logout invalida token",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Banco original preservado por SHA-256",
+      "ok": true,
+      "detail": ""
+    }
+  ],
+  "originalDatabaseUnchanged": true,
+  "temporaryCopy": "C:\\Users\\diego\\AppData\\Local\\Temp\\renolink-auditoria-sIR7DS",
+  "note": "Resultados com FALHA confirmam defeitos; ok=true significa que o cenário foi reproduzido. Cópia temporária contém dados locais e não deve ser publicada."
+}
