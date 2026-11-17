@@ -1,0 +1,15 @@
+{
+  "meta": {
+    "schemaVersion": 5,
+    "nextUserId": 1,
+    "nextIdeaId": 1,
+    "nextMessageId": 1,
+    "nextNegotiationId": 1,
+    "nextConversationId": 1,
+    "nextSupportMessageId": 1,
+    "nextRequestId": 1,
+    "nextAuditId": 1
+  },
+  "users": [], "ideas": [], "messages": [], "negotiations": [], "sessions": [],
+  "staff": [], "conversations": [], "supportMessages": [], "requests": [], "audit": []
+}

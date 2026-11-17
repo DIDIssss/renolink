@@ -6,8 +6,11 @@
   "scripts": {
     "postinstall": "node scripts/patch-mysql2-ip-identity.js",
     "start": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File INICIAR_RENOLINK.ps1",
+    "start:render": "node server.js",
+    "test:render": "node --require ./test/fixtures/forbid-original-json.cjs --test test/render.test.js test/render-schema.test.js test/hosting.test.js test/security.test.js test/realtime.test.js test/realtime-scoped.test.js test/realtime-client.test.js test/mysql.test.js test/mysql.read.test.js test/mysql.scopes.test.js test/mysql.provision.test.js test/phase5.test.js",
+    "db:plan:render": "node scripts/render-schema.js --check",
     "reset-db": "node reset-db.js",
-    "test": "node --test test/security.test.js test/mysql.test.js test/mysql.read.test.js test/mysql.scopes.test.js test/mysql.provision.test.js test/mysql.tls.identity.test.js test/fair-mysql-bootstrap-plan.test.js test/mysql-bootstrap-trial.static.test.js test/mysql-bootstrap-diagnostics.test.js test/phase5.test.js test/portal-summary.test.js test/realtime.test.js test/realtime-scoped.test.js test/realtime-client.test.js test/app-client.test.js test/crypto-queue.test.js test/hosting.test.js",
+    "test": "node --test test/security.test.js test/mysql.test.js test/mysql.read.test.js test/mysql.scopes.test.js test/mysql.provision.test.js test/mysql.tls.identity.test.js test/fair-mysql-bootstrap-plan.test.js test/mysql-bootstrap-trial.static.test.js test/mysql-bootstrap-diagnostics.test.js test/phase5.test.js test/portal-summary.test.js test/realtime.test.js test/realtime-scoped.test.js test/realtime-client.test.js test/app-client.test.js test/crypto-queue.test.js test/hosting.test.js test/render.test.js test/render-schema.test.js",
     "test:phase82": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/test-phase82.ps1 -Mode Functional",
     "test:phase83": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/test-phase83.ps1 -Mode Run",
     "test:phase81": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/test-phase81.ps1 -Mode Functional",
@@ -29,7 +32,7 @@
     "test:phase9": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/test-phase9.ps1 -Mode Test"
   },
   "dependencies": {
-    "mysql2": "^3.24.6",
+    "mysql2": "3.24.6",
     "pg": "^8.23.1"
   },
   "devDependencies": {

@@ -277,9 +277,9 @@ test('Perfil da feira mantém porta 3100 e túnel apenas para loopback', () => {
   const env = fs.readFileSync(path.join(fair, 'fair.env.example'), 'utf8');
   const tunnel = fs.readFileSync(path.join(fair, 'cloudflared.yml.example'), 'utf8');
   const startup = fs.readFileSync(path.join(fair, 'Start-Fair.ps1'), 'utf8');
-  const server = fs.readFileSync(path.join(__dirname, '..', 'server.js'), 'utf8');
   const services = [...tunnel.matchAll(/service:\s*(http:\/\/127\.0\.0\.1:\d+|http_status:\d+)/g)].map(match => match[1]);
-  assert.match(server, /process\.env\.PORT\s*\|\|\s*3000/);
+  assert.deepEqual(require('../lib/hosting').binding({APP_ENV:'fair',PORT:'3100'}),{host:'127.0.0.1',port:3100});
+  assert.deepEqual(require('../lib/hosting').binding({}),{host:'127.0.0.1',port:3000});
   assert.match(env, /^PORT=3100$/m);
   assert.match(startup, /\$env:PORT -ne '3100'/);
   assert.deepEqual(services, ['http://127.0.0.1:3100', 'http_status:404']);

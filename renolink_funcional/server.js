@@ -12,7 +12,6 @@ const { localStore } = require('./lib/data');
 const phase5 = require('./lib/phase5');
 
 const ROOT = __dirname;
-const PORT = Number(process.env.PORT || 3000);
 const PUBLIC_FILES = new Set([
   '/index.html', '/empresa.html', '/explorar.html', '/ideia.html', '/cadastro.html',
   '/login.html', '/dashboard.html', '/nova-ideia.html', '/mensagens.html', '/negociacoes.html',
@@ -432,23 +431,23 @@ async function initializeStorage(store) {
   return store.transaction(() => {});
 }
 
-async function start() {
-  require('./lib/hosting').policy();
-  if(!Number.isInteger(PORT)||PORT<0||PORT>65535)throw Error('Porta invalida.');
-  if (process.env.STORAGE_DRIVER && !['json', 'mysql', 'postgres'].includes(process.env.STORAGE_DRIVER)) throw Error('Driver de armazenamento inválido.');
-  if (process.env.NODE_ENV === 'production' && (process.env.COOKIE_SECURE !== '1' || !/^https:\/\//.test(process.env.APP_ORIGIN || '') || process.env.STORAGE_DRIVER !== 'mysql')) throw Error('Produção exige MySQL, APP_ORIGIN HTTPS e COOKIE_SECURE=1.');
-  const store = process.env.STORAGE_DRIVER === 'mysql'
-    ? require('./lib/mysql').mysqlStore()
-    : process.env.STORAGE_DRIVER === 'postgres'
+async function start({ env=process.env, storageFactory, serverFactory=createServer } = {}) {
+  const {port:PORT,host:HOST}=require('./lib/hosting').binding(env);
+  const hostingPolicy=require('./lib/hosting').policy(env);
+  if (env.STORAGE_DRIVER && !['json', 'mysql', 'postgres'].includes(env.STORAGE_DRIVER)) throw Error('Driver de armazenamento inválido.');
+  if (env.NODE_ENV === 'production' && (env.COOKIE_SECURE !== '1' || !/^https:\/\//.test(env.APP_ORIGIN || '') || env.STORAGE_DRIVER !== 'mysql')) throw Error('Produção exige MySQL, APP_ORIGIN HTTPS e COOKIE_SECURE=1.');
+  const store = storageFactory ? storageFactory() : env.STORAGE_DRIVER === 'mysql'
+    ? require('./lib/mysql').mysqlStore(require('./lib/mysql').config(env))
+    : env.STORAGE_DRIVER === 'postgres'
     ? require('./lib/postgres').postgresStore()
-    : localStore({ source: path.join(ROOT, 'data/db.json'), file: process.env.RENOLINK_RUNTIME_DB || path.join(ROOT, 'data/runtime/db.json'), backupDir: path.join(ROOT, 'data/backups') });
+    : localStore({ source: path.join(ROOT, 'data/db.json'), file: env.RENOLINK_RUNTIME_DB || path.join(ROOT, 'data/runtime/db.json'), backupDir: path.join(ROOT, 'data/backups') });
   try { await initializeStorage(store); } catch (error) { await store.close(); throw error; }
-  const server = createServer(store);
-  const runtimeMetrics=process.env.APP_LOG_FORMAT==='json'?require('./lib/runtime-metrics').monitor(server):null;
+  const server = serverFactory(store,{hosting:hostingPolicy});
+  const runtimeMetrics=env.APP_LOG_FORMAT==='json'?require('./lib/runtime-metrics').monitor(server):null;
   server.once('close',()=>runtimeMetrics?.close());
   server.on('error', async () => { console.error('Não foi possível iniciar o servidor. Verifique a porta e a configuração.'); await store.close(); process.exitCode = 1; });
-  server.listen(PORT, '127.0.0.1', () => {
-    if(process.env.APP_LOG_FORMAT==='json')console.log(JSON.stringify({event:'listening',bind:'loopback',port:server.address().port,environment:process.env.APP_ENV==='staging'?'staging':'application'}));
+  server.listen(PORT, HOST, () => {
+    if(env.APP_LOG_FORMAT==='json')console.log(JSON.stringify({event:'listening',bind:HOST,port:server.address().port,environment:env.APP_ENV==='render'?'render':env.APP_ENV==='staging'?'staging':'application'}));
     else console.log(`RenoLink local: http://localhost:${server.address().port}`);
   });
   let stopping=false;
@@ -460,5 +459,9 @@ async function start() {
   process.once('exit', () => { if (store.file) store.close(); });
   return { server, store };
 }
-if (require.main === module) start().catch(() => { console.error('Inicialização recusada. Verifique a configuração e o bloqueio do banco local.'); process.exitCode = 1; });
+if (require.main === module) start().catch(() => {
+  if(process.env.APP_LOG_FORMAT==='json')console.error(JSON.stringify({event:'startup_failed',environment:process.env.RENDER==='true'?'render':'application'}));
+  else console.error('Inicialização recusada. Verifique ambiente, TLS e disponibilidade/schema do banco.');
+  process.exitCode = 1;
+});
 module.exports = { createServer, initializeStorage, start };

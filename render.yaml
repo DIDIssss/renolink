@@ -1,0 +1,41 @@
+# Template only. Creating/applying this Blueprint is a separate publication action.
+services:
+  - type: web
+    name: renolink
+    runtime: node
+    plan: free
+    branch: main
+    rootDir: renolink_funcional
+    buildCommand: npm ci --omit=dev
+    startCommand: node server.js
+    healthCheckPath: /health/ready
+    autoDeployTrigger: "off"
+    envVars:
+      - key: NODE_VERSION
+        value: 24.22.1
+      - key: NODE_ENV
+        value: production
+      - key: APP_ENV
+        value: render
+      - key: TRUST_PROXY
+        value: render
+      - key: STORAGE_DRIVER
+        value: mysql
+      - key: COOKIE_SECURE
+        value: "1"
+      - key: MYSQL_SSL
+        value: "1"
+      - key: APP_LOG_FORMAT
+        value: json
+      - key: APP_ORIGIN
+        sync: false
+      - key: MYSQL_HOST
+        sync: false
+      - key: MYSQL_PORT
+        sync: false
+      - key: MYSQL_DATABASE
+        sync: false
+      - key: MYSQL_USER
+        sync: false
+      - key: MYSQL_PASSWORD
+        sync: false

@@ -1,5 +1,8 @@
 # RenoLink - Protótipo local funcional
 
+Preparação para hospedagem Node/MySQL no Render: [configuração e pendências](deploy/RENDER.md).
+Validação portátil com dados sintéticos: `npm run test:render`. Nenhum deploy é automático.
+
 ## Fase 7 — atualizações automáticas locais
 
 SSE adiciona atualizações automáticas de propostas, status, conversas,
@@ -47,8 +50,9 @@ de entrada está em /admin-login.html; a conta ID 3 já está autorizada.
 3. Abra `http://127.0.0.1:3000` no navegador.
 4. Não abra os arquivos `.html` diretamente; a aplicação depende do servidor local.
 
-## Contas de demonstração
+## Contas e dados locais
 
+Nao existem credenciais publicas para o ambiente hospedado. Cadastros de visitantes usam o formulario; acesso administrativo exige concessao separada e autorizada. JSONs historicos ficam somente no computador do operador. Testes usam fixtures sinteticas.
 
 ## Banco de dados
 

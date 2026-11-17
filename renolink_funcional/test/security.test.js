@@ -24,7 +24,7 @@ test('Autenticacao preparada revalida hash e identidade antes de conceder sessao
 const { safeRedirect } = require('../assets/js/security');
 const pg = require('../lib/postgres');
 const { migrate } = require('../scripts/migrate-postgres');
-const original = path.resolve(__dirname, '../data/db.json');
+const original = path.resolve(__dirname, 'fixtures/empty.json');
 const originalHash = security.digest(fs.readFileSync(original));
 function fixture() {
   const now = '2026-08-23T12:00:00.000Z';

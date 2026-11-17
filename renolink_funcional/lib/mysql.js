@@ -17,6 +17,14 @@ const quoted = key => '`' + column(key) + '`';
 function config(env = process.env, prefix = 'MYSQL_') {
   const get = key => env[prefix + key];
   if (!get('HOST') || !get('DATABASE') || !get('USER') || !get('PASSWORD')) throw Error('Configuração MySQL incompleta.');
+  if (env.APP_ENV === 'render') {
+    // mysql2's DNS identity check is mandatory here; IP-only local fair TLS has
+    // a separate explicit verifier and must never be selected by the cloud profile.
+    if (require('node:net').isIP(get('HOST')) || !/^(?=.{1,253}$)[a-z0-9](?:[a-z0-9.-]*[a-z0-9])?$/i.test(get('HOST')) ||
+        !get('HOST').includes('.') || /(?:^|\.)(?:localhost|local)$/i.test(get('HOST')) ||
+        /^(?:renolink_(?:dev|test)(?:_|$)|mysql$|sys$|information_schema$|performance_schema$)/i.test(get('DATABASE')) ||
+        get('USER').toLowerCase() === 'root') throw Error('Render exige DNS MySQL externo, banco dedicado e conta de aplicacao.');
+  }
   const port = Number(get('PORT') || 3306);
   if (!Number.isInteger(port) || port < 1 || port > 65535) throw Error('Porta MySQL inválida.');
   if (env.NODE_ENV === 'production' && ['renolink_dev', 'renolink_test'].includes(get('DATABASE'))) {
