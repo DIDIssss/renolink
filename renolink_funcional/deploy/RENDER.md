@@ -65,6 +65,9 @@ Probes internos HTTP sem cabeçalhos de borda acessam exclusivamente GET
 `/health/live` e `/health/ready`, com Host correto. A exceção não alcança APIs,
 arquivos, login ou SSE. Ready consulta o MySQL e devolve 503 quando indisponível;
 live verifica o processo. Os logs JSON omitem IP, cookies, corpo e query string.
+Falhas de inicialização registram `startup_failed` com `stage` e uma categoria
+enumerada, sem texto ou código bruto da exceção. Esses campos distinguem
+configuração do Render, configuração MySQL, conexão/TLS, schema e bind da porta.
 
 SSE mantém heartbeat, reconexão, isolamento e invalidação existente. Testes
 locais simulam o proxy; buffering, cabeçalhos reais, retomada do Free e celulares

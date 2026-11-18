@@ -261,7 +261,11 @@ function mysqlStore(options = config(), {connectionPool=pool(options), observe=(
     transaction:write,
     initialize:()=>enqueue(()=>transaction(connectionPool,async client=>{
       const [[meta]] = await client.execute("SELECT JSON_EXTRACT(payload, '$.schemaVersion') AS version FROM renolink_meta WHERE id = 1");
-      if (!meta || Number(meta.version) !== 5) throw Error('Schema MySQL RenoLink incompatível.');
+      if (!meta || Number(meta.version) !== 5) {
+        const error=Error('Schema MySQL RenoLink incompatível.');
+        error.code='RENOLINK_SCHEMA_INVALID';
+        throw error;
+      }
     },options.database,options.expectedServerUuid)),
     health:async()=>{const client=await connectionPool.getConnection();try{const [[info]]=await client.execute(connectionIdentityQuery(options.expectedServerUuid));assertConnectionTarget(info,options.database,options.expectedServerUuid);const [rows]=await client.execute("SELECT JSON_EXTRACT(payload, '$.schemaVersion') AS version FROM renolink_meta WHERE id = 1");return rows.length===1&&Number(rows[0].version)===5;}finally{client.release();}},
     read:fn=>enqueue(()=>reader(fn)),

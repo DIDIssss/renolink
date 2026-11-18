@@ -1,6 +1,6 @@
 'use strict';
 const {test}=require('node:test'),assert=require('node:assert/strict'),{EventEmitter,once}=require('node:events');
-const hosting=require('../lib/hosting'),{createServer,start}=require('../server'),mysql=require('../lib/mysql');
+const hosting=require('../lib/hosting'),{createServer,start,startupFailureLog}=require('../server'),mysql=require('../lib/mysql');
 const env={NODE_ENV:'production',APP_ENV:'render',RENDER:'true',RENDER_SERVICE_ID:'srv-synthetic',RENDER_EXTERNAL_HOSTNAME:'renolink-test.onrender.com',APP_ORIGIN:'https://renolink-test.onrender.com',STORAGE_DRIVER:'mysql',COOKIE_SECURE:'1',MYSQL_SSL:'1',TRUST_PROXY:'render',PORT:'10000'};
 const headers={host:'renolink-test.onrender.com','x-forwarded-proto':'https','cf-connecting-ip':'203.0.113.8','x-forwarded-for':'203.0.113.8, 172.71.1.2, 10.1.1.2'};
 const request=(changes={})=>({method:'GET',url:'/api/me',socket:{remoteAddress:'10.2.3.4'},headers:{...headers},...changes});
@@ -71,8 +71,21 @@ test('startup uses Render host and port only after initialized storage; unavaila
  }finally{for(const [s,previous]of baseline)for(const handler of process.listeners(s))if(!previous.includes(handler))process.removeListener(s,handler);}
  const pool={getConnection:async()=>{throw Error('synthetic unavailable');},end:async()=>{closed=true;}};
  const store=mysql.mysqlStore({database:'synthetic'}, {connectionPool:pool});
- let created=false;await assert.rejects(start({env,storageFactory:()=>store,serverFactory:()=>{created=true;}}));
+ const stages=[];let created=false;await assert.rejects(start({env,storageFactory:()=>store,serverFactory:()=>{created=true;},onStartupStage:stage=>stages.push(stage)}));
+ assert.deepEqual(stages,['hosting_configuration','storage_configuration','storage_initialization']);
  assert.equal(closed,true);assert.equal(created,false);
+});
+test('startup diagnostic identifies stage and safe category without serializing error details',()=>{
+ const error=Object.assign(Error('synthetic secret sentinel'),{code:'ER_ACCESS_DENIED_ERROR'});
+ const entry=startupFailureLog('storage_initialization',error,env);
+ assert.deepEqual(JSON.parse(entry),{event:'startup_failed',environment:'render',stage:'storage_initialization',category:'mysql_authentication'});
+ assert.equal(entry.includes('synthetic secret sentinel'),false);
+ assert.equal(JSON.parse(startupFailureLog('hosting_configuration',Error('private'))).category,'hosting_configuration');
+ assert.equal(JSON.parse(startupFailureLog('storage_configuration',Error('private'))).category,'mysql_configuration');
+ assert.equal(JSON.parse(startupFailureLog('storage_initialization',Object.assign(Error(),{code:'RENOLINK_SCHEMA_INVALID'}))).category,'mysql_schema');
+ assert.equal(JSON.parse(startupFailureLog('storage_initialization',Object.assign(Error(),{code:'ERR_TLS_CERT_ALTNAME_INVALID'}))).category,'mysql_tls');
+ assert.equal(JSON.parse(startupFailureLog('storage_initialization',Object.assign(Error(),{code:'ENOTFOUND'}))).category,'mysql_network');
+ assert.equal(JSON.parse(startupFailureLog('http_listen',Object.assign(Error(),{code:'EADDRINUSE'}))).category,'port_in_use');
 });
 test('Render HTTP integration: health, CSRF, secure cookies and logs without secrets',async()=>{
  const fetch=(url,options={})=>new Promise((resolve,reject)=>{

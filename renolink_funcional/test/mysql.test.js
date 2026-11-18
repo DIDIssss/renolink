@@ -126,7 +126,7 @@ test('Instância da feira valida banco, porta e UUID antes do lock', async () =>
 test('Inicialização recusa schema ausente ou incompatível e faz rollback', async () => {
   const pool = fakePool({ schemaVersion: null });
   const store = mysql.mysqlStore({}, { connectionPool: pool });
-  await assert.rejects(store.initialize(), /Schema MySQL RenoLink incompatível/);
+  await assert.rejects(store.initialize(), error => /Schema MySQL RenoLink incompatível/.test(error.message) && error.code === 'RENOLINK_SCHEMA_INVALID');
   const calls = pool.calls.map(c => c.sql);
   assert.ok(calls.includes('ROLLBACK'));
   assert.ok(!calls.includes('COMMIT'));

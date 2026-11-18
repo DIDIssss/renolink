@@ -431,21 +431,50 @@ async function initializeStorage(store) {
   return store.transaction(() => {});
 }
 
-async function start({ env=process.env, storageFactory, serverFactory=createServer } = {}) {
+function startupFailureLog(stage, error, env=process.env) {
+  const code=typeof error?.code==='string'?error.code:'';
+  let category;
+  if (['ER_ACCESS_DENIED_ERROR'].includes(code)) category='mysql_authentication';
+  else if (['ER_BAD_DB_ERROR'].includes(code)) category='mysql_database';
+  else if (['ER_NO_SUCH_TABLE','ER_BAD_FIELD_ERROR','RENOLINK_SCHEMA_INVALID'].includes(code)) category='mysql_schema';
+  else if (['ER_DBACCESS_DENIED_ERROR','ER_TABLEACCESS_DENIED_ERROR'].includes(code)) category='mysql_permissions';
+  else if (/^(?:ERR_TLS_|ERR_SSL_|CERT_|UNABLE_TO_VERIFY_LEAF_SIGNATURE|DEPTH_ZERO_SELF_SIGNED_CERT|SELF_SIGNED_CERT_IN_CHAIN|HANDSHAKE_SSL_ERROR)/.test(code)) category='mysql_tls';
+  else if (['ENOTFOUND','EAI_AGAIN','ECONNREFUSED','ECONNRESET','ETIMEDOUT','EHOSTUNREACH','ENETUNREACH','PROTOCOL_CONNECTION_LOST','PROTOCOL_SEQUENCE_TIMEOUT'].includes(code)) category='mysql_network';
+  else if (stage==='hosting_configuration') category='hosting_configuration';
+  else if (stage==='storage_configuration') category='mysql_configuration';
+  else if (stage==='storage_initialization') category='mysql_initialization';
+  else if (stage==='server_creation') category='server_initialization';
+  else if (stage==='http_listen'&&code==='EADDRINUSE') category='port_in_use';
+  else if (stage==='http_listen'&&['EACCES','EPERM'].includes(code)) category='listen_permission';
+  else if (stage==='http_listen') category='http_listen_error';
+  else category='startup_error';
+  return JSON.stringify({event:'startup_failed',environment:env.RENDER==='true'?'render':'application',stage,category});
+}
+
+async function start({ env=process.env, storageFactory, serverFactory=createServer, onStartupStage } = {}) {
+  onStartupStage?.('hosting_configuration');
   const {port:PORT,host:HOST}=require('./lib/hosting').binding(env);
   const hostingPolicy=require('./lib/hosting').policy(env);
   if (env.STORAGE_DRIVER && !['json', 'mysql', 'postgres'].includes(env.STORAGE_DRIVER)) throw Error('Driver de armazenamento inválido.');
   if (env.NODE_ENV === 'production' && (env.COOKIE_SECURE !== '1' || !/^https:\/\//.test(env.APP_ORIGIN || '') || env.STORAGE_DRIVER !== 'mysql')) throw Error('Produção exige MySQL, APP_ORIGIN HTTPS e COOKIE_SECURE=1.');
+  onStartupStage?.('storage_configuration');
   const store = storageFactory ? storageFactory() : env.STORAGE_DRIVER === 'mysql'
     ? require('./lib/mysql').mysqlStore(require('./lib/mysql').config(env))
     : env.STORAGE_DRIVER === 'postgres'
     ? require('./lib/postgres').postgresStore()
     : localStore({ source: path.join(ROOT, 'data/db.json'), file: env.RENOLINK_RUNTIME_DB || path.join(ROOT, 'data/runtime/db.json'), backupDir: path.join(ROOT, 'data/backups') });
+  onStartupStage?.('storage_initialization');
   try { await initializeStorage(store); } catch (error) { await store.close(); throw error; }
+  onStartupStage?.('server_creation');
   const server = serverFactory(store,{hosting:hostingPolicy});
   const runtimeMetrics=env.APP_LOG_FORMAT==='json'?require('./lib/runtime-metrics').monitor(server):null;
   server.once('close',()=>runtimeMetrics?.close());
-  server.on('error', async () => { console.error('Não foi possível iniciar o servidor. Verifique a porta e a configuração.'); await store.close(); process.exitCode = 1; });
+  onStartupStage?.('http_listen');
+  server.on('error', async error => {
+    if(env.APP_LOG_FORMAT==='json')console.error(startupFailureLog('http_listen',error,env));
+    else console.error('Não foi possível iniciar o servidor. Verifique a porta e a configuração.');
+    await store.close(); process.exitCode = 1;
+  });
   server.listen(PORT, HOST, () => {
     if(env.APP_LOG_FORMAT==='json')console.log(JSON.stringify({event:'listening',bind:HOST,port:server.address().port,environment:env.APP_ENV==='render'?'render':env.APP_ENV==='staging'?'staging':'application'}));
     else console.log(`RenoLink local: http://localhost:${server.address().port}`);
@@ -459,9 +488,12 @@ async function start({ env=process.env, storageFactory, serverFactory=createServ
   process.once('exit', () => { if (store.file) store.close(); });
   return { server, store };
 }
-if (require.main === module) start().catch(() => {
-  if(process.env.APP_LOG_FORMAT==='json')console.error(JSON.stringify({event:'startup_failed',environment:process.env.RENDER==='true'?'render':'application'}));
+if (require.main === module) {
+  let startupStage='hosting_configuration';
+  start({onStartupStage:stage=>{startupStage=stage;}}).catch(error => {
+  if(process.env.APP_LOG_FORMAT==='json')console.error(startupFailureLog(startupStage,error));
   else console.error('Inicialização recusada. Verifique ambiente, TLS e disponibilidade/schema do banco.');
   process.exitCode = 1;
-});
-module.exports = { createServer, initializeStorage, start };
+  });
+}
+module.exports = { createServer, initializeStorage, start, startupFailureLog };
