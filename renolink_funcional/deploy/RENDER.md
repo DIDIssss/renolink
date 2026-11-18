@@ -34,7 +34,7 @@ Valores obrigatórios do operador, nunca no Git:
   IPs, localhost e domínios .local são recusados neste perfil.
 - `MYSQL_PORT`, `MYSQL_DATABASE`, `MYSQL_USER`, `MYSQL_PASSWORD`: destino
   dedicado, conta de aplicação sem root e sem privilégios DDL. A porta tem
-  default 3306, mas deve seguir o provedor. Sugestão de banco: renolink_render.
+  valor 3306 no Enzonic e o banco dedicado se chama `main`.
 - `MYSQL_SSL_CA`, somente se necessário: caminho de um Secret File CA **público**,
   por exemplo `/etc/secrets/mysql-ca.pem`. Não fornecer chave privada.
 
@@ -72,42 +72,45 @@ externos continuam pendentes de homologação autorizada. O plano Free suspende
 por inatividade e tem disco efêmero: não usar JSON, uploads locais ou backups
 locais como persistência. Não há garantia medida de capacidade para 50 pessoas.
 
-## Banco: plano offline, nenhuma execução automática
+## Inicialização do MySQL Enzonic
 
-É necessário contratar/obter separadamente um MySQL acessível ao Render com TLS:
-o Web Service Free não inclui um MySQL persistente. MYSQL80 não é uma alternativa.
+O destino aprovado para preparação é `renolink-prod-m84hr0.db.enzonic.com:3306/main`. O estado desse banco só pode ser confirmado em uma consulta real autorizada. O GitHub recebeu a base limpa `e07173e`. As mudanças Enzonic são locais.
 
-```text
-node scripts/render-schema.js --check
-node scripts/render-schema.js --sql
-```
+### Ambiente do Web Service
 
-Ambos são offline: não carregam credenciais nem conectam a um banco. O segundo
-imprime SQL para revisão; não o envia a servidor algum. Reutiliza 001_initial.sql
-e 002_phase5.sql, mantendo doze tabelas, relacionamentos e CHECKs de MySQL
-8.0.17+ / 8.4 LTS. Acrescenta apenas o bootstrap de metadados versão 5, com
-contadores em 1 e hash do DDL Fase 5 normalizado para LF. Não cria usuários,
-administradores ou dados.
+Use os campos da tabela acima e os valores de `deploy/render.env.example`. A origem é `https://<nome-atribuído>.onrender.com`, sem barra final. Preencha `MYSQL_PROVIDER=enzonic`, `MYSQL_HOST=renolink-prod-m84hr0.db.enzonic.com`, `MYSQL_PORT=3306`, `MYSQL_DATABASE=main` e `MYSQL_SSL=1`.
 
-Execução futura: aprovar destino, conta migradora, backup e ausência de gravações;
-usar somente schema novo/dedicado vazio, nunca renolink_dev/test/MYSQL80. A conta
-runtime deve ser distinta. DDL MySQL pode fazer commit implícito: falha parcial
-exige inspeção, sem reset. O INSERT de metadados exige todas as tabelas vazias,
-não sobrescreve metadados e permite repetição sem duplicar registros. Não usar
-IF NOT EXISTS para legitimar tabelas preexistentes divergentes. Conferir as
-estruturas e o resultado final schema_version=5 antes de liberar a aplicação.
-Não foi validada uma execução real em 8.0/8.4 nesta etapa.
+Forneça `MYSQL_USER` e `MYSQL_PASSWORD` como segredos de runtime no painel do Render, com conta dedicada ao aplicativo e sem DDL. Se o provedor disponibilizar apenas uma conta administrativa, confirme com ele como separar credenciais antes do deploy. Evite copiar a URL completa de conexão. O projeto usa os campos individuais. O mysql2 envia o DNS em SNI, exige cadeia confiável e verifica o hostname. Se a cadeia precisar de uma CA própria, obtenha o certificado público da CA por canal autenticado do provedor, monte como Secret File e informe `MYSQL_SSL_CA=/etc/secrets/mysql-ca.pem`. Falha de CA ou hostname bloqueia a conexão.
 
-Antes de iniciar, o backend conecta, verifica versão/destino e meta.schemaVersion=5.
-Falha impede abertura da porta. Nenhuma migração roda no build/start. As rotas
-de administrador exigirão uma concessão separada e autorizada no banco novo.
+### Ensaio offline e operações futuras
+
+Execute da pasta `renolink_funcional`. Somente o primeiro comando é offline.
+
+| Etapa | Comando | Resultado esperado |
+|---|---|---|
+| Revisar plano offline | `node scripts/render-schema.js --check` | 12 tabelas, 13 instruções, `connected:false` |
+| Inspecionar com autorização de leitura | `node scripts/enzonic-schema.js --check-empty` | `EMPTY_VERIFIED` |
+| Inicializar após autorização de escrita | `node scripts/enzonic-schema.js --initialize-empty-main` | `EMPTY_SCHEMA_V5_VERIFIED` |
+
+1. Na futura sessão privada do operador, injete os cinco campos públicos `MYSQL_PROVIDER/HOST/PORT/DATABASE/SSL` acima (todos com o prefixo `MYSQL_`), a CA se necessária e os segredos `ENZONIC_MIGRATOR_USER` e `ENZONIC_MIGRATOR_PASSWORD` por um gerenciador de segredos no ambiente **do processo**. Encerre a sessão após o uso. Mantenha a conta migradora fora do Render, do Git, de arquivos .env, do histórico do terminal e de comandos com URI ou senha. Os modos operacionais não usam `MYSQL_USER/PASSWORD` como fallback.
+2. Reserve uma janela exclusiva para o schema, com o aplicativo e outros escritores fora dele. Confira a identidade do banco no painel Enzonic e a opção de recuperação disponível. O lock nomeado coordena clientes RenoLink que respeitam o mesmo lock. A exclusividade diante de outras ferramentas depende do operador.
+3. Na inspeção, uma única conexão dedicada verifica banco selecionado, versão 8.4, cifra TLS, grants e inventário. Tabelas e views, rotinas, triggers e eventos devem totalizar zero. Um catálogo filtrado por permissões pode parecer vazio. A ferramenta exige prova de visibilidade por grants diretos abrangendo `main.*`, incluindo SELECT, EVENT, TRIGGER e visibilidade sobre todas as rotinas (por exemplo EXECUTE no schema). Grants globais suficientes já existentes também são reconhecidos. Permissões exclusivamente via roles ou revogações parciais podem tornar a prova inconclusiva. Pare e revise com o provedor se houver bloqueio. O procedimento não concede privilégios.
+4. A inicialização adquire o lock sem espera e repete a inspeção na mesma conexão imediatamente antes do DDL. Exige também CREATE, REFERENCES e INSERT. Cria as tabelas dos dois SQLs versionados em ordem, com erro se o nome já existir, e insere apenas o metadado gerado pelo plano v5. Confere o inventário exato, uma linha de metadados com payload integral (versão, contadores e hash) e zero linhas nas outras onze tabelas. A conexão fecha ao final. Nenhum importador, arquivo de dados antigo ou etapa de administração integra esse fluxo.
+5. MySQL confirma DDL implicitamente. Se houver erro, timeout ou perda da resposta, considere o estado indeterminado e inspecione antes de decidir o próximo passo. Repetir em destino parcial ou já inicializado é bloqueado pela inspeção. O utilitário não faz rollback de DDL, reset nem repetição automática.
+6. Só depois da verificação pós-DDL, homologar com credenciais de runtime, `/health/ready`, autenticação, SSE e uma retomada real após hibernação. Publicar o código e criar/iniciar o serviço são operações separadas.
+
+### Hibernação e pool
+
+O plano gratuito do Enzonic suspende o compute após cinco minutos **sem conexões** e a próxima conexão espera a retomada. Com mysql2 3.24.6, o coletor de conexões livres só é ativado quando `maxIdle < connectionLimit`. O perfil Enzonic mantém cinco conexões simultâneas, até quatro livres e descarta as ociosas após cerca de 60 segundos. O tempo de conexão passa de 5 para 30 segundos para acomodar o despertar. O valor é uma margem inicial, ainda sem medição nesse destino. Conexões ativas não são removidas pelo coletor. O driver retira do pool conexões encerradas, mas uma operação em andamento pode falhar durante uma interrupção. Escritas não são repetidas automaticamente.
+
+O Render consulta o health check a intervalos de poucos segundos e exige resposta HTTP em cinco segundos. A consulta de readiness e acessos SSE podem manter o banco acordado enquanto o serviço está ativo. Na homologação, meça a primeira conexão após suspensão real e a primeira resposta bem-sucedida de readiness. O timeout da conexão do driver não amplia o prazo da probe da plataforma. [Enzonic MySQL](https://enzonic.dev/databases/mysql/) · [Hibernação Enzonic](https://enzonic.com/cloud/databases) · [Health checks do Render](https://render.com/docs/health-checks)
 
 ## Dados e ferramentas locais
 
 `data/db.json` e `data/db.seed.json` foram retirados apenas do índice Git e
 ignorados. Os originais locais foram comparados byte a byte com HEAD e
 preservados. Também foram removidas as credenciais de demonstração do README.
-Ainda é necessário criar um commit futuro com essas mudanças; nenhum push ocorreu.
+A versão limpa foi publicada no GitHub em `e07173e`.
 
 Dependências que continuam exclusivamente locais e exigem arquivos privados:
 
@@ -126,9 +129,7 @@ Dependências que continuam exclusivamente locais e exigem arquivos privados:
 `test/security.test.js` agora verifica preservação de uma fixture vazia sintética;
 os demais testes padrão usam fixtures geradas, em diretórios temporários ou memória.
 
-Histórico local: o commit inicial contém os JSONs e as credenciais antigas do
-README. Untracking não remove esse conteúdo do histórico/GitHub. Para eliminá-lo
-será necessária reescrita coordenada e atualização remota, sujeitas a autorização.
+O histórico anterior à limpeza continha os JSONs e as credenciais antigas do README.
 Tratar senhas antigas como expostas caso tenham sido usadas, avaliar revogação
 de sessões/troca de senha e reutilização em outros sistemas; nada disso foi feito.
 Reescrita não remove cópias, forks, caches ou clones de terceiros automaticamente.
@@ -141,7 +142,7 @@ npm run test:render
 
 No PowerShell com política restrita, usar `npm.cmd run test:render` sem alterar
 políticas do Windows. A suíte usa armazenamento em memória, mocks SQL e HTTP
-loopback; não acessa MySQL real. Foram aprovados 73 testes, sem falhas finais.
+loopback; não acessa MySQL real. A suíte portátil com os oito testes Enzonic passou em 81 testes.
 A suíte padrão `npm.cmd test` também passou: 112 testes, incluindo TLS com
 servidor simulado e certificados sintéticos locais, sem conexão a MySQL real.
 Essa suíte padrão inclui mocks PowerShell; para Linux/CI, usar test:render.
@@ -151,9 +152,7 @@ O patch postinstall foi conferido como já
 aplicado e mysql2 ficou fixado em 3.24.6 no package.json e lockfile. Build Linux
 real e homologação Render dependem de autorização e do banco externo.
 
-Pendências: commit/publicação autorizados; tratamento do histórico; provedor MySQL,
-grants e TLS reais; migração aprovada; primeiro administrador; testes HTTPS/SSE,
-persistência, reinício e acesso móvel no serviço real. Nada foi publicado.
+Pendências para o Enzonic e o Render incluem a inspeção real de TLS, grants e inventário, a inicialização autorizada, a publicação das alterações locais e a homologação do serviço.
 
 Referências: [Render web services](https://render.com/docs/web-services),
 [health checks](https://render.com/docs/health-checks),

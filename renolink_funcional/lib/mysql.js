@@ -4,6 +4,7 @@ const {isDeepStrictEqual}=require('node:util');
 const { checkMysqlServerIdentity } = require('./mysql-tls-identity');
 const { validate, stable } = require('./data');
 const { digest, fail } = require('./security');
+const ENZONIC_HOST = 'renolink-prod-m84hr0.db.enzonic.com';
 const mappings = {
   users: ['id', 'name', 'email', 'role', 'company', 'salt', 'passwordHash', 'createdAt'],
   ideas: ['id', 'userId', 'title', 'category', 'problem', 'solution', 'beneficiaries', 'participation', 'status', 'potential', 'createdAt', 'updatedAt'],
@@ -40,6 +41,15 @@ function config(env = process.env, prefix = 'MYSQL_') {
     connectionLimit: 5, queueLimit: 100, waitForConnections: true, connectTimeout: 5000,
     ssl: get('SSL') === '1' ? { rejectUnauthorized: true, verifyIdentity: true, ...(get('SSL_CA') ? { ca: fs.readFileSync(get('SSL_CA')) } : {}) } : undefined
   };
+  if (env.APP_ENV === 'render' && (get('PROVIDER') || /\.db\.enzonic\.com$/i.test(options.host))) {
+    if ((get('PROVIDER') && get('PROVIDER') !== 'enzonic') ||
+        options.host !== ENZONIC_HOST || port !== 3306 || options.database !== 'main' ||
+        !options.ssl?.verifyIdentity || !options.ssl.rejectUnauthorized) {
+      throw Error('Destino Enzonic divergente.');
+    }
+    // mysql2 only starts its idle eviction timer when maxIdle < connectionLimit.
+    Object.assign(options, { maxIdle: 4, idleTimeout: 60_000, connectTimeout: 30_000 });
+  }
   if (env.APP_ENV === 'fair' && options.ssl) {
     options.ssl.checkServerIdentity = checkMysqlServerIdentity;
   }

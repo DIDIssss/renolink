@@ -29,12 +29,14 @@ services:
         value: json
       - key: APP_ORIGIN
         sync: false
+      - key: MYSQL_PROVIDER
+        value: enzonic
       - key: MYSQL_HOST
-        sync: false
+        value: renolink-prod-m84hr0.db.enzonic.com
       - key: MYSQL_PORT
-        sync: false
+        value: "3306"
       - key: MYSQL_DATABASE
-        sync: false
+        value: main
       - key: MYSQL_USER
         sync: false
       - key: MYSQL_PASSWORD

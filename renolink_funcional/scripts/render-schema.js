@@ -15,7 +15,7 @@ function plan(){
  meta.phase5MigrationHash=createHash('sha256').update(sources[1]).digest('hex');
  const guard=tables.map(name=>`NOT EXISTS (SELECT 1 FROM ${name})`).join('\n AND ');
  const bootstrap=`INSERT INTO renolink_meta (id,payload)\nSELECT 1, '${JSON.stringify(meta)}'\nWHERE ${guard}`;
- return {schemaVersion:5,tables,statements:[...statements,bootstrap],sql:[...statements,bootstrap,'SELECT JSON_EXTRACT(payload, \'$.schemaVersion\') AS schema_version FROM renolink_meta WHERE id=1'].join(';\n\n')+';\n'};
+ return {schemaVersion:5,meta,tables,statements:[...statements,bootstrap],sql:[...statements,bootstrap,'SELECT JSON_EXTRACT(payload, \'$.schemaVersion\') AS schema_version FROM renolink_meta WHERE id=1'].join(';\n\n')+';\n'};
 }
 if(require.main===module){
  try{
