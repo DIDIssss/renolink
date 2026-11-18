@@ -56,10 +56,12 @@ test('Render ignores spoofed XFF prefixes, Forwarded, X-Real-IP and X-Forwarded-
  assert.throws(()=>hosting.context(request({rawHeaders:['X-Forwarded-For','a','x-forwarded-for','b']}),p),e=>e.status===403);
  assert.deepEqual(hosting.context(request({socket:{remoteAddress:'::ffff:10.2.3.4'}}),p),{ip:'203.0.113.8',secure:true});
 });
-test('only exact GET health routes can use direct internal probes without forwarding headers',()=>{
+test('only exact GET health routes bypass Render proxy validation',()=>{
  const p=hosting.policy(env),r=request({url:'/health/ready',headers:{host:headers.host}});
  assert.deepEqual(hosting.context(r,p),{ip:'10.2.3.4',secure:false});
- for(const change of [{url:'/api/events'},{url:'/api/auth/login'},{url:'/health/ready?x=1'},{method:'POST'},{socket:{remoteAddress:'198.51.100.1'}}])assert.throws(()=>hosting.context({...r,...change},p),e=>e.status===403);
+ const external=request({url:'/health/ready',socket:{remoteAddress:'198.51.100.1'},headers:{host:'unexpected.example','x-forwarded-for':'spoofed','x-forwarded-proto':'http','cf-connecting-ip':'invalid'}});
+ assert.deepEqual(hosting.context(external,p),{ip:'198.51.100.1',secure:false});
+ for(const change of [{url:'/api/events'},{url:'/api/auth/login'},{url:'/health/ready?x=1'},{method:'POST'},{url:'/api/me',socket:{remoteAddress:'198.51.100.1'}}])assert.throws(()=>hosting.context({...r,...change},p),e=>e.status===403);
 });
 test('startup uses Render host and port only after initialized storage; unavailable MySQL never opens HTTP',async()=>{
  let initialized=false,bound,closed=false;

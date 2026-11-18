@@ -33,15 +33,13 @@ const listed=(list,ip)=>!!isIP(ip)&&list.check(ip,isIP(ip)===4?'ipv4':'ipv6');
 const denied=()=>Object.assign(Error('Proxy HTTPS invalido.'),{status:403});
 function renderContext(req,p){
  const peer=normalizeIP(req.socket.remoteAddress);
+ // Render health checks may bypass the public proxy; these endpoints reveal only readiness.
+ if(req.method==='GET'&&['/health/live','/health/ready'].includes(req.url))return {ip:peer,secure:false};
  if(!listed(internal,peer))throw denied();
  for(const name of ['host','x-forwarded-for','x-forwarded-proto','cf-connecting-ip']){
   if((req.rawHeaders||[]).filter((v,i)=>i%2===0&&v.toLowerCase()===name).length>1)throw denied();
  }
  if(req.headers.host!==new URL(p.origin).host)throw denied();
- // Render's direct HTTP probes have no edge headers. This bypass cannot reach API,
- // static files, authentication or SSE; no forwarded client identity is accepted.
- if(req.method==='GET'&&['/health/live','/health/ready'].includes(req.url)&&
-    req.headers['x-forwarded-for']===undefined&&req.headers['cf-connecting-ip']===undefined&&req.headers['x-forwarded-proto']===undefined)return {ip:peer,secure:false};
  const forwarded=req.headers['x-forwarded-for'],client=normalizeIP(req.headers['cf-connecting-ip']);
  if(req.headers['x-forwarded-proto']!=='https'||typeof forwarded!=='string'||forwarded.length>2048||!isIP(client)||listed(internal,client))throw denied();
  const chain=forwarded.split(',').map(v=>normalizeIP(v.trim()));
